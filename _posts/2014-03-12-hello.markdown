@@ -686,8 +686,8 @@ Consequently PromiseKit doesn’t wrap many delegate patterns yet (eg. UITextFie
 @end
 
 @implementation PMKLocationManager {
-    void (^fulfiller)(id);
-    void (^rejecter)(id);
+    PromiseFulfiller fulfiller;  // void (^)(id)
+    PromiseRejecter rejecter;    // void (^)(NSError *)
 }
 
 + (Promise *)promise {
@@ -695,7 +695,7 @@ Consequently PromiseKit doesn’t wrap many delegate patterns yet (eg. UITextFie
     manager.delegate = manager;
     [manager startUpdatingLocation];
     [manager pmk_reference];  // anti ARC hack
-    return [Promise new:^(id fulfiller, id rejecter){
+    return [Promise new:^(PromiseFulfiller fulfiller, PromiseRejecter rejecter){
         manager->fulfiller = fulfiller;
         manager->rejecter = rejecter;
     }];

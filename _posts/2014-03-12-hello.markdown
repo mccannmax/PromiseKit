@@ -827,10 +827,11 @@ If you find further non-compliance please open a [ticket](https://github.com/mxc
 * We offer a `when`/`all`
 * We offer an `until`
 
+
 #Terminology
 
 * Promises start in a **pending** state.
-* Promises **resolve** to become **fulfilled** or **rejected**.
+* Promises **resolve** with a **value** to become **fulfilled** or **rejected**.
 
 
 #The Fine Print

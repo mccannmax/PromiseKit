@@ -841,7 +841,7 @@ The fine print of PromiseKit is mostly exactly what you would expect, so don’t
 * Returning an instance of `NSError` or throwing an exception within a then block will cause PromiseKit to bubble that object up to the *next* nearest catch handler.
 * `catch` handlers are *always* passed an `NSError` object.
 * `then` handlers that follow `catch` handlers **will** execute.
-* Returning an `NSError` (or ``@throw`ing) from a `catch` will “throw” to the next catch.
+* Returning an `NSError` (or `@throw`ing) from a `catch` will “throw” to the next catch.
 * Returning a non-error value from a `catch` will pass that value to the next `then`
 * Nothing happens if you add a `then` to a failed Promise (unless you subsequently add a `catch` handler to the Promise returned from that `then`)
 

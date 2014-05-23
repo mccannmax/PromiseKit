@@ -24,6 +24,7 @@ document.getElementsByTagName('head')[0].appendChild(script);
 
 <a class="github" href="https://github.com/mxcl/PromiseKit">PromiseKit on GitHub</a> <span id="pulse"></span>
 
+
 #Importing PromiseKit
 
 In your [Podfile](http://guides.cocoapods.org/using/using-cocoapods.html):
@@ -52,6 +53,7 @@ pod 'PromiseKit/UIKit'
 pod 'PromiseKit/CoreLocation'
 pod 'PromiseKit/MapKit'
 {% endhighlight %}
+
 
 #Why Promises?
 
@@ -216,9 +218,9 @@ The repeated, explicit error handling clutters the code.
 });
 {% endhighlight %}
 
-Errors and exceptions break the chain of promises and bubble up to the next `catch` handler. In the case of exceptions objects are caught and wrapped in an NSError object. The original thrown object is accessible via `error.userInfo[PMKUnderlyingExceptionKey]`.
+Errors and exceptions break the chain of promises and bubble up to the next `catch` handler. In the case of exceptions, objects are caught and wrapped in an NSError object. The original thrown object is accessible via `error.userInfo[PMKUnderlyingExceptionKey]`.
 
-This tends to work well for asynchronous chains because typically you want to know if the whole chain succeeded or the whole chain failed. You don’t want to micromanage the error handling every step of the way.
+This tends to work well for asynchronous chains; typically you want to know if the whole chain succeeded or the whole chain failed. You don’t want to micromanage the error handling every step of the way.
 
 The above makes use of PromiseKit’s category additions to the iOS SDK. Mostly PromiseKit’s categories are logical conversions of block-based or delegate-based asynchronous patterns to Promises. `NSURLConnection+PromiseKit` additionally detects that the response is JSON (from the HTTP headers) and deserializes that JSON in a background thread. All of PromiseKit’s categories are optional CocoaPods subspecs.
 
@@ -272,6 +274,23 @@ Promise *locater = [CLLocationManager promise];
     // if any Promises fail, the `catch` handler is executed
     // immediately any other Promises are discarded
     
+    NSNumber *indexOfPromiseThatFailed = error.userInfo[PMKFailingPromiseIndexKey];
+});
+{% endhighlight %}
+
+`when:` also takes an `NSDictionary`, and thus `then`s an `NSDictionary`:
+
+{% highlight objectivec %}
+id dict = @{
+    @"grabcat": grabcat,
+    @"locater": locater
+};
+
+[Promise when:dict].then(^(NSDictionary *results){
+    // results[@"grabcat"] is the `UIImage *` from grabcat
+    // results[@"locater"] is the `CLLocation *` from locater
+}).catch(^(NSError *error){
+    NSString *keyOfPromiseThatFailed = error.userInfo[PMKFailingPromiseIndexKey];
 });
 {% endhighlight %}
 
@@ -335,7 +354,7 @@ self.kitten.then(^(UIImage *image){
 });
 {% endhighlight %}
 
-The block you pass to `finally` cannot take any arguments and can only return void.
+The block you pass to `finally` cannot take or return arguments.
 
 
 #The Category Additions
@@ -420,6 +439,8 @@ A Promise to get the user’s location:
     //…
 });
 {% endhighlight %}
+
+The `then` has an optional second parameter that is the full array of returned locations. Which usually is an array of one location. The first parameter is the most recent location.
 
 
 ##CLGeocoder+PromiseKit
@@ -861,8 +882,8 @@ self.kitten.then(^(UIImage *image){
 }).catch(^{
     
 }).then(^{
-    // provided the above catch did not throw or return a
-    // `NSError`: always executes
+    // provided the above catch did not throw or return an
+    // `NSError` this then will always execute
 })
 {% endhighlight %}
 

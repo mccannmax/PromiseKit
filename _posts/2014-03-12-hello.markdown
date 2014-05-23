@@ -198,7 +198,7 @@ id q = [NSOperationQueue new];
 
 The repeated, explicit error handling clutters the code.
 
-##Promises Have Elegant Error Handling
+Promises have elegant error handling:
 
 {% highlight objectivec %}
 #import "PromiseKit.h"
@@ -227,7 +227,7 @@ The above makes use of PromiseKit’s category additions to the iOS SDK. Mostly 
 
 #Say Goodbye to Asynchronous State Machines
 
-Promises represent the future value of a task. You can add more than one `then` handler to a promise. Even after the promise has been fulfilled. If the promise already has a value the then handler is called immediately:
+Promises represent the future value of a task. You can add more than one `then` handler to a promise. Even after the promise has been fulfilled. If the promise already has a value the then handler is called (almost) immediately:
 
 {% highlight objectivec %}
 @implementation MyViewController {
@@ -340,7 +340,7 @@ myPromise.then(^{
 {% endhighlight %}
 
 
-#`finally`
+#finally
 
 We also provide `finally` which runs if the Promise has been rejected or resolved:
 

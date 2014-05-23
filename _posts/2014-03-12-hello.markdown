@@ -912,8 +912,7 @@ This can be especially important when using `when`/`all` since those methods wil
 
 In the case where you have the persisted, cached value for some asynchronous object and you want to show the user that, but also fetch the fresh data and then show the user that:
 
-```objc
-
+{% highlight objectivec %}
 - (Promise *)fetch {
     return dispatch_promise(^{
         id fresh = [NSURLConnection GET:self.fetchURL];  // start fetching ASAP
@@ -930,7 +929,7 @@ In the case where you have the persisted, cached value for some asynchronous obj
         [self updateWithData:freshData];
     });
 }
-```
+{% endhighlight %}
 
 
 #Cancellation & Progress

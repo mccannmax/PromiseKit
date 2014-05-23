@@ -354,7 +354,7 @@ self.kitten.then(^(UIImage *image){
 });
 {% endhighlight %}
 
-The block you pass to `finally` cannot take or return arguments.
+The block you pass to `finally` cannot take or return arguments: it cannot change the Promise.
 
 
 #The Category Additions

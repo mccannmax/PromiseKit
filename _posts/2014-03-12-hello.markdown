@@ -105,6 +105,7 @@ dispatch_promise(^{
 
 Code with promises is about as close as we can get to the minimal cleanliness of synchronous code.
 
+
 ##Chaining Promises
 
 A `Promise` represents the *future* value of an asynchronous task. To obtain the value of that future, we `then` off the Promise.
@@ -115,14 +116,14 @@ Promise *promise = dispatch_promise(^{
     return md5(email);
 });
 
-// `dispatch_promise` returns a promise representing the
-// future value of the block it executes. You can `then`
-// off any Promise object and it will receive the previous
-// Promise’s value as its parameter once that block has
-// been executed.
+// `dispatch_promise` executes its block via `dispatch_async`.
+// It returns a Promise. When the block has executed it
+// fulfills its promise with the value you return from that
+// block.
 
 promise = promise.then(^(NSString *md5){
     // we’re back in the main thread
+    // the `md5` came from the above `dispatch_promise`
     return [NSURLConnection GET:@"http://gravatar.com/%@", md5];
 });
 
@@ -355,6 +356,11 @@ self.kitten.then(^(UIImage *image){
 {% endhighlight %}
 
 The block you pass to `finally` cannot take or return arguments: it cannot change the Promise.
+
+
+#thenOn
+
+`then` always runs on the main thread. Using `thenOn` allows you to choose the queue on which your block will continue. When in doubt: `then`.
 
 
 #The Category Additions

@@ -663,7 +663,7 @@ Becomes this:
 For the community’s benefit, someone should create a `Parse+PromiseKit` pod.
 
 
-##Wrapping eg. `AFNetworking`
+##Wrapping e.g. `AFNetworking`
 
 {% highlight objectivec %}
 @interface AFHTTPRequestOperation (PromiseKit)

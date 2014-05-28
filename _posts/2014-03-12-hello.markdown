@@ -419,9 +419,9 @@ PromiseKit reads the response headers and decodes the result you actually wanted
 });
 {% endhighlight %}
 
-Otherwise we return the raw `NSData`.
+If the mime-type is textual, we return an `NSString`. Otherwise the first parameter will be the raw undecoded `NSData`. Whatever the mimetype the `then` has three optional parameters: the first is the decoded data, the second the `NSHTTPURLResponse` and the third the raw undecoded data.
 
-And of course a variant that takes an `NSURLRequest *`:
+Finally we provide a variant that takes an `NSURLRequest *`:
 
 {% highlight objectivec %}
 NSMutableURLRequest *rq = [NSMutableURLRequest requestWithURL:url];

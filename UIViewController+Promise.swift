@@ -21,14 +21,12 @@ class MFMailComposeViewControllerProxy: NSObject, MFMailComposeViewControllerDel
 class UIImagePickerControllerProxy: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate
 {
     func imagePickerController(picker: UIImagePickerController!, didFinishPickingMediaWithInfo info: NSDictionary!) {
-
-        // crashes Swift compiler in Xcode6b1
-//        let img = info[UIImagePickerControllerEditedImage]
-//        picker.fulfill(img)
+        let o = info.objectForKey(UIImagePickerControllerOriginalImage) as UIImage!
+        picker.fulfill(o as UIImage?)
     }
 
     func imagePickerControllerDidCancel(picker: UIImagePickerController!) {
-        picker.fulfill(nil)
+        picker.fulfill(nil as UIImage?)
     }
 }
 
@@ -44,8 +42,9 @@ var keys: Selector = "fulfill:"
 let key: CConstVoidPointer = &keys
 
 extension UIViewController {
-    func fulfill(value:Any) {
-        let resolver = objc_getAssociatedObject(self, key) as Resolver<Any>;
+    func fulfill<T>(value:T) {
+        let o = objc_getAssociatedObject(self, key)
+        let resolver = o as Resolver<T>
         resolver.fulfiller(value)
     }
 
@@ -71,14 +70,15 @@ extension UIViewController {
         return promiseViewController(vc, animated: animated, completion: completion)
     }
 
-    func promiseViewController<T>(vc: MFMailComposeViewController, animated: Bool = false, completion:(Void)->() = {}) -> Promise<T> {
+    func promiseViewController(vc: MFMailComposeViewController, animated: Bool = false, completion:(Void)->() = {}) -> Promise<Int> {
         vc.delegate = MFMailComposeViewControllerProxy()
         return promiseViewController(vc as UIViewController, animated: animated, completion: completion)
     }
 
-    func promiseViewController<T>(vc: UIImagePickerController, animated: Bool = false, completion:(Void)->() = {}) -> Promise<T> {
-        vc.delegate = UIImagePickerControllerProxy()
-        PMKRetain(vc.delegate)
+    func promiseViewController(vc: UIImagePickerController, animated: Bool = false, completion:(Void)->() = {}) -> Promise<UIImage?> {
+        let delegate = UIImagePickerControllerProxy()
+        vc.delegate = delegate
+        PMKRetain(delegate)
         return promiseViewController(vc as UIViewController, animated: animated, completion: completion).finally {
             PMKRelease(vc.delegate)
         }

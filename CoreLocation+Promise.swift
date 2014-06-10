@@ -1,21 +1,22 @@
 import CoreLocation
 
 
-class LocationManager: CoreLocation.CLLocationManager, CLLocationManagerDelegate {
+class LocationManager: CLLocationManager, CLLocationManagerDelegate {
     let fulfiller: (CLLocation) -> Void
     let rejecter: (NSError) -> Void
 
     func locationManager(manager: CLLocationManager!, didUpdateLocations locations: AnyObject[]!) {
-        fulfiller(locations[locations.count - 1] as CLLocation)
+        let mostRecentLocation = (locations as NSArray).lastObject as CLLocation
+        fulfiller(mostRecentLocation)
     }
 
     func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
         rejecter(error)
     }
 
-    init(fulfiller: (CLLocation) -> Void, rejecter: (NSError) -> Void) {
-        self.fulfiller = fulfiller
-        self.rejecter = rejecter
+    init(deferred:(_:Promise<CLLocation>, (CLLocation) -> Void, rejecter: (NSError) -> Void)) {
+        self.fulfiller = deferred.1
+        self.rejecter = deferred.2
         super.init()
         delegate = self
         PMKRetain(self)
@@ -25,7 +26,7 @@ class LocationManager: CoreLocation.CLLocationManager, CLLocationManagerDelegate
 extension CLLocationManager {
     class func promise() -> Promise<CLLocation> {
         let deferred = Promise<CLLocation>.defer()
-        let manager = LocationManager(deferred.fulfiller, deferred.rejecter)
+        let manager = LocationManager(deferred: deferred)
         manager.startUpdatingLocation()
         deferred.promise.finally {
             manager.delegate = nil

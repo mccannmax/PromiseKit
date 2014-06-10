@@ -88,6 +88,23 @@ class Promise<T>
             }
         }
     }
+//
+//    func then(body:(T) -> Void) -> Promise<Void> {
+//        if rejected {
+//            return Promise<Void>(error: error!);
+//        }
+//
+//        if fulfilled {
+//            return Promise<Void>{ (fulfiller, rejecter) in
+//                body(self.value!)
+//                fulfiller()
+//            }
+//        }
+//
+//        return Promise<Void> { (fulfiller, rejecter) -> Void in
+//
+//        }
+//    }
 
     func then<U>(body:(T) -> Promise<U>) -> Promise<U> {
         if rejected {

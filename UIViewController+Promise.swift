@@ -43,8 +43,7 @@ let key: CConstVoidPointer = &keys
 
 extension UIViewController {
     func fulfill<T>(value:T) {
-        let o = objc_getAssociatedObject(self, key)
-        let resolver = o as Resolver<T>
+        let resolver = objc_getAssociatedObject(self, key) as Resolver<T>
         resolver.fulfiller(value)
     }
 

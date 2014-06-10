@@ -7,9 +7,9 @@ import MapKit  // interestingly you have to import again, so imports inside fram
 class ViewController: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         let iv = UIImageView(frame:CGRect(x:0, y:100, width: 320, height: 320))
-        self.view.addSubview(iv)
         iv.contentMode = .Center
-        self.title = "Loading Cat"
+        view.addSubview(iv)
+        title = "Loading Cat"
 
         NSURLConnection.GET("http://placekitten.com/250/250").then{ (img:UIImage) in
             self.title = "Cat"
@@ -29,11 +29,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             av.title = "Hi"
             av.addButtonWithTitle("Bye")
             return av.promise()
-        }.then { (value:Int) -> Void in
-            self.title = "You clicked: \(value)"
-        }.then { () -> Promise<CLLocation> in
+        }.then {
+            self.title = "You tapped button #\($0)"
+        }.then {
             return CLLocationManager.promise()
-        }.catch { (_) -> CLLocation in
+        }.catch { _ -> CLLocation in
             // If location cannot be determined, default to Chicago
             return CLLocation(latitude: 41.89, longitude: -87.63)
         }.then{ (ll:CLLocation) -> Promise<Dictionary<String, Any>> in
